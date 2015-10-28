@@ -48,9 +48,19 @@ namespace ImageScaling.Plugin.Abstractions
 
     public abstract class ImageScalingBase : IImageScaling
     {
-        public abstract MemoryStream Scale(Stream stream, ImageType resultType, int width, int height, int quality);
+        public MemoryStream Scale(Stream stream, ImageType resultType, int width, int height, int quality)
+        {
+            return ScaleWithQuality(stream, resultType, width, height, GetValidQuality(quality));
+        }
 
-        public abstract MemoryStream ScaleIfNeeded(Stream stream, ImageType resultType, int maxDimension, int quality);
+        protected abstract MemoryStream ScaleWithQuality(Stream stream, ImageType resultType, int width, int height, int quality);
+
+        public MemoryStream ScaleIfNeeded(Stream stream, ImageType resultType, int maxDimension, int quality)
+        {
+            return ScaleIfNeededWithQuality(stream, resultType, maxDimension, GetValidQuality(quality));
+        }
+
+        protected abstract MemoryStream ScaleIfNeededWithQuality(Stream stream, ImageType resultType, int maxDimension, int quality);
 
         public Task<MemoryStream> ScaleAsync(Stream stream, ImageType resultType, int width, int height, int quality)
         {
@@ -60,6 +70,19 @@ namespace ImageScaling.Plugin.Abstractions
         public Task<MemoryStream> ScaleIfNeededAsync(Stream stream, ImageType resultType, int maxDimension, int quality)
         {
             return Task.Run(() => ScaleIfNeeded(stream, resultType, maxDimension, quality));
+        }
+
+        private static int GetValidQuality(int quality)
+        {
+            if (quality < 0)
+            {
+                return 0;
+            }
+            if (quality > 100)
+            {
+                return 100;
+            }
+            return quality;
         }
     }
 }

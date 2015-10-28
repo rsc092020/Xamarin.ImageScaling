@@ -8,17 +8,8 @@ namespace ImageScaling.Plugin
 {
     public class ImageScalingImplementation : ImageScalingBase
     {
-        public override MemoryStream Scale (Stream stream, ImageType resultType, int width, int height, int quality)
+        protected override MemoryStream ScaleWithQuality (Stream stream, ImageType resultType, int width, int height, int quality)
         {
-            if (quality < 0)
-            {
-                quality = 0;
-            }
-            if (quality > 100)
-            {
-                quality = 100;
-            }
-
             using (var bitmap = BitmapFactory.DecodeStream(stream))
             {
                 var scaledStream = new MemoryStream();
@@ -32,17 +23,8 @@ namespace ImageScaling.Plugin
             }
         }
 
-        public override MemoryStream ScaleIfNeeded (Stream stream, ImageType resultType, int maxDimension, int quality)
+        protected override MemoryStream ScaleIfNeededWithQuality (Stream stream, ImageType resultType, int maxDimension, int quality)
         {
-            if (quality < 0)
-            {
-                quality = 0;
-            }
-            if (quality > 100)
-            {
-                quality = 100;
-            }
-
             using (var bitmap = BitmapFactory.DecodeStream(stream))
             {
                 var scaledStream = new MemoryStream();
